@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using DotnetLgtmpPoc.Core.Data;
 using DotnetLgtmpPoc.Core.Telemetry;
 using DotnetLgtmpPoc.Web.Endpoints;
