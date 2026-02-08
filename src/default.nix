@@ -1,11 +1,13 @@
-# Build dotnet-lgtmp-poc OCI image with nix2container
+# Build dotnet-lgtmp-poc OCI images with nix2container
 #
 # Usage (on optiplex / x86_64-linux):
-#   nix build .#image                          # build OCI image
-#   nix run .#image.copyToRegistry             # push to localhost:5000
+#   nix build .#web-image                        # build web OCI image
+#   nix run .#web-image.copyToRegistry            # push to localhost:5000
+#   nix build .#console-image                     # build console OCI image
+#   nix run .#console-image.copyToRegistry        # push to localhost:5000
 #
 # Generate NuGet dependency lock (works on macOS too):
-#   nix build .#app.fetch-deps
+#   nix build .#web-app.fetch-deps
 #   ./result deps.json
 #
 { pkgs, nix2container ? null }:
@@ -13,17 +15,30 @@
 let
   dotnet-sdk = pkgs.dotnetCorePackages.sdk_10_0;
   dotnet-aspnetcore = pkgs.dotnetCorePackages.aspnetcore_10_0;
+  dotnet-runtime = pkgs.dotnetCorePackages.runtime_10_0;
 
-  app = pkgs.buildDotnetModule {
-    pname = "dotnet-lgtmp-poc";
+  web-app = pkgs.buildDotnetModule {
+    pname = "dotnet-lgtmp-poc-web";
     version = "1.0.0";
-    src = ./DotnetLgtmpPoc;
+    src = ./.;
 
-    projectFile = "DotnetLgtmpPoc.csproj";
+    projectFile = "DotnetLgtmpPoc.Web/DotnetLgtmpPoc.Web.csproj";
     dotnet-sdk = dotnet-sdk;
     dotnet-runtime = dotnet-aspnetcore;
 
-    # Generated with: nix build .#app.fetch-deps && ./result deps.json
+    # Generated with: nix build .#web-app.fetch-deps && ./result deps.json
+    nugetDeps = ./deps.json;
+  };
+
+  console-app = pkgs.buildDotnetModule {
+    pname = "dotnet-lgtmp-poc-console";
+    version = "1.0.0";
+    src = ./.;
+
+    projectFile = "DotnetLgtmpPoc.Console/DotnetLgtmpPoc.Console.csproj";
+    dotnet-sdk = dotnet-sdk;
+    dotnet-runtime = dotnet-runtime;
+
     nugetDeps = ./deps.json;
   };
 
@@ -49,30 +64,42 @@ let
     '';
   };
 
-  image = nix2container.buildImage {
+  imageRoot = pkgs.buildEnv {
+    name = "image-root";
+    paths = [
+      pkgs.cacert         # TLS certificates (/etc/ssl/certs)
+      pkgs.icu            # .NET globalization
+      pkgs.tzdata         # timezone data
+      pyroscope-libs      # Pyroscope native profiler .so files
+    ];
+    pathsToLink = [ "/etc" "/share" "/lib" "/pyroscope" ];
+  };
+
+  web-image = nix2container.buildImage {
     name = "localhost:5000/dotnet-lgtmp-poc";
     tag = "latest";
-
-    copyToRoot = pkgs.buildEnv {
-      name = "image-root";
-      paths = [
-        pkgs.cacert         # TLS certificates (/etc/ssl/certs)
-        pkgs.icu            # .NET globalization
-        pkgs.tzdata         # timezone data
-        pyroscope-libs      # Pyroscope native profiler .so files
-      ];
-      pathsToLink = [ "/etc" "/share" "/lib" "/pyroscope" ];
-    };
+    copyToRoot = imageRoot;
 
     # All env vars are set in the k8s module (dotnet-lgtmp-poc.nix) — not baked into the image
     config = {
-      entrypoint = [ "${dotnet-aspnetcore}/bin/dotnet" "${app}/lib/dotnet-lgtmp-poc/DotnetLgtmpPoc.dll" ];
+      entrypoint = [ "${dotnet-aspnetcore}/bin/dotnet" "${web-app}/lib/dotnet-lgtmp-poc-web/DotnetLgtmpPoc.Web.dll" ];
       exposedPorts = { "8080/tcp" = {}; };
+    };
+  };
+
+  console-image = nix2container.buildImage {
+    name = "localhost:5000/dotnet-lgtmp-console";
+    tag = "latest";
+    copyToRoot = imageRoot;
+
+    config = {
+      entrypoint = [ "${dotnet-runtime}/bin/dotnet" "${console-app}/lib/dotnet-lgtmp-poc-console/DotnetLgtmpPoc.Console.dll" ];
     };
   };
 
 in
 {
-  inherit app;
-  image = if nix2container != null then image else null;
+  inherit web-app console-app;
+  web-image = if nix2container != null then web-image else null;
+  console-image = if nix2container != null then console-image else null;
 }

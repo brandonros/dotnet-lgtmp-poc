@@ -1,4 +1,4 @@
-namespace DotnetLgtmpPoc.Models;
+namespace DotnetLgtmpPoc.Core.Models;
 
 public class Item
 {

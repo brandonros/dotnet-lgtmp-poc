@@ -1,14 +1,8 @@
 using System.Diagnostics;
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using DotnetLgtmpPoc.Data;
-using DotnetLgtmpPoc.Models;
-
-var serviceVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "0.0.0";
+using DotnetLgtmpPoc.Core.Data;
+using DotnetLgtmpPoc.Core.Models;
+using DotnetLgtmpPoc.Core.Telemetry;
 
 WebApplication app;
 
@@ -16,35 +10,8 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // ── OpenTelemetry: Traces + Metrics ──
-    // Reads OTEL_SERVICE_NAME, OTEL_EXPORTER_OTLP_ENDPOINT, OTEL_EXPORTER_OTLP_PROTOCOL from env vars
-    builder.Services.AddOpenTelemetry()
-        .ConfigureResource(r => r.AddService(
-            serviceName: Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME") ?? "dotnet-lgtmp-poc",
-            serviceVersion: serviceVersion))
-        .WithTracing(tracing => tracing
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddEntityFrameworkCoreInstrumentation()
-            .AddOtlpExporter())
-        .WithMetrics(metrics => metrics
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddRuntimeInstrumentation()
-            .AddProcessInstrumentation()
-            .AddOtlpExporter());
+    builder.AddOtelDefaults();
 
-    // ── OpenTelemetry: Logs (OTLP exporter alongside JSON console) ──
-    builder.Logging.AddOpenTelemetry(logging =>
-    {
-        logging.SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddService(
-                serviceName: Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME") ?? "dotnet-lgtmp-poc",
-                serviceVersion: serviceVersion));
-        logging.AddOtlpExporter();
-    });
-
-    // ── PostgreSQL + EF Core ──
     var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
         ?? throw new InvalidOperationException("CONNECTION_STRING env var is required");
     builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
@@ -53,7 +20,6 @@ try
 }
 catch (Exception ex)
 {
-    // app.Logger isn't available yet — create a standalone JSON console logger
     using var loggerFactory = LoggerFactory.Create(l => l.AddJsonConsole());
     var logger = loggerFactory.CreateLogger("Program");
     logger.LogCritical(ex, "Failed during host construction");

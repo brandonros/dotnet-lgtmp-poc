@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="DotnetLgtmpPoc/DotnetLgtmpPoc.csproj" />
+  <Project Path="DotnetLgtmpPoc.Core/DotnetLgtmpPoc.Core.csproj" />
+  <Project Path="DotnetLgtmpPoc.Web/DotnetLgtmpPoc.Web.csproj" />
+  <Project Path="DotnetLgtmpPoc.Console/DotnetLgtmpPoc.Console.csproj" />
 </Solution>

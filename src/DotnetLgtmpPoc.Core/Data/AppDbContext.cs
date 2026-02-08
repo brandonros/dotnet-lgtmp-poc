@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using DotnetLgtmpPoc.Models;
+using DotnetLgtmpPoc.Core.Models;
 
-namespace DotnetLgtmpPoc.Data;
+namespace DotnetLgtmpPoc.Core.Data;
 
 public class AppDbContext : DbContext
 {

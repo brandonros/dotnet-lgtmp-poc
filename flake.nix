@@ -28,10 +28,12 @@
           };
         in
         {
-          default = built.app;
-          app = built.app;
+          default = built.web-app;
+          web-app = built.web-app;
+          console-app = built.console-app;
         } // nixpkgs.lib.optionalAttrs (system == "x86_64-linux") {
-          image = built.image;
+          web-image = built.web-image;
+          console-image = built.console-image;
         }
       );
     };
