@@ -1,0 +1,31 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- EF Core + PostgreSQL -->
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+
+    <!-- Hosting (console app) -->
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+
+    <!-- OpenTelemetry core -->
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
+
+    <!-- Traces -->
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.15.0-beta.1" />
+
+    <!-- Metrics -->
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.15.0-beta.1" />
+
+    <!-- OTLP exporter (traces, metrics, logs) -->
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
+
+    <!-- Pyroscope managed API -->
+    <PackageVersion Include="Pyroscope" Version="0.13.0" />
+  </ItemGroup>
+</Project>
