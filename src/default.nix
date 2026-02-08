@@ -1,14 +1,14 @@
 # Build dotnet-lgtmp-poc OCI images with nix2container
 #
-# Usage (on optiplex / x86_64-linux):
+# Usage (x86_64-linux):
 #   nix build .#web-image                        # build web OCI image
 #   nix run .#web-image.copyToRegistry            # push to localhost:5000
 #   nix build .#console-image                     # build console OCI image
 #   nix run .#console-image.copyToRegistry        # push to localhost:5000
 #
-# Generate NuGet dependency lock (works on macOS too):
-#   nix build .#web-app.fetch-deps
-#   ./result deps.json
+# Generate NuGet dependency locks (works on macOS too):
+#   nix build .#web-app.fetch-deps && ./result src/web-deps.json
+#   nix build .#console-app.fetch-deps && ./result src/console-deps.json
 #
 { pkgs, nix2container ? null }:
 
@@ -26,8 +26,7 @@ let
     dotnet-sdk = dotnet-sdk;
     dotnet-runtime = dotnet-aspnetcore;
 
-    # Generated with: nix build .#web-app.fetch-deps && ./result deps.json
-    nugetDeps = ./deps.json;
+    nugetDeps = ./web-deps.json;
   };
 
   console-app = pkgs.buildDotnetModule {
@@ -39,7 +38,7 @@ let
     dotnet-sdk = dotnet-sdk;
     dotnet-runtime = dotnet-runtime;
 
-    nugetDeps = ./deps.json;
+    nugetDeps = ./console-deps.json;
   };
 
   # Pyroscope native profiler (CLR profiler + API wrapper)

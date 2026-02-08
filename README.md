@@ -67,14 +67,14 @@ RunAsync
 
 ### 1. Generate NuGet dependency lock (first time / after changing packages)
 
-Works on both macOS and Linux:
+Each project has its own lock file. Run from the repo root (works on both macOS and Linux):
 
 ```bash
-nix build .#web-app.fetch-deps
-./result deps.json
+nix build .#web-app.fetch-deps && ./result src/web-deps.json
+nix build .#console-app.fetch-deps && ./result src/console-deps.json
 ```
 
-This produces `deps.json` which pins all NuGet packages for reproducible Nix builds. Re-run if you change package references.
+Re-run if you change package references in any `.csproj`.
 
 ### 2. Fix the Pyroscope hash (first time only)
 
