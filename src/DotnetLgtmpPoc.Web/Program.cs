@@ -1,8 +1,7 @@
 using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
 using DotnetLgtmpPoc.Core.Data;
-using DotnetLgtmpPoc.Core.Models;
 using DotnetLgtmpPoc.Core.Telemetry;
+using DotnetLgtmpPoc.Web.Endpoints;
 
 WebApplication app;
 
@@ -47,45 +46,7 @@ try
         await next();
     });
 
-    // ── CRUD endpoints ──
-    var items = app.MapGroup("/api/items");
-
-    items.MapGet("/", async (AppDbContext db) =>
-        await db.Items.ToListAsync());
-
-    items.MapGet("/{id:int}", async (int id, AppDbContext db) =>
-        await db.Items.FindAsync(id) is Item item
-            ? Results.Ok(item)
-            : Results.NotFound());
-
-    items.MapPost("/", async (Item item, AppDbContext db) =>
-    {
-        item.CreatedAt = DateTime.UtcNow;
-        db.Items.Add(item);
-        await db.SaveChangesAsync();
-        return Results.Created($"/api/items/{item.Id}", item);
-    });
-
-    items.MapPut("/{id:int}", async (int id, Item input, AppDbContext db) =>
-    {
-        var item = await db.Items.FindAsync(id);
-        if (item is null) return Results.NotFound();
-        item.Name = input.Name;
-        item.Description = input.Description;
-        await db.SaveChangesAsync();
-        return Results.Ok(item);
-    });
-
-    items.MapDelete("/{id:int}", async (int id, AppDbContext db) =>
-    {
-        var item = await db.Items.FindAsync(id);
-        if (item is null) return Results.NotFound();
-        db.Items.Remove(item);
-        await db.SaveChangesAsync();
-        return Results.NoContent();
-    });
-
-    // ── Health check ──
+    app.MapItemEndpoints();
     app.MapGet("/health", () => Results.Ok("healthy"));
 
     app.Run();

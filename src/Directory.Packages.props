@@ -25,6 +25,9 @@
     <!-- OTLP exporter (traces, metrics, logs) -->
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
 
+    <!-- CSV parsing -->
+    <PackageVersion Include="CsvHelper" Version="33.0.1" />
+
     <!-- Pyroscope managed API -->
     <PackageVersion Include="Pyroscope" Version="0.13.0" />
   </ItemGroup>
