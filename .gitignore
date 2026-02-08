@@ -1,0 +1,11 @@
+# .NET
+bin/
+obj/
+
+# Nix
+result
+
+# IDE
+.vs/
+.idea/
+*.user
