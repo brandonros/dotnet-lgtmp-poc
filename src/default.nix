@@ -63,25 +63,32 @@ let
     '';
   };
 
-  imageRoot = pkgs.buildEnv {
+  # Stable /usr/bin/dotnet symlink so Argo (and other tools) can find dotnet
+  # without knowing the Nix store hash
+  mkDotnetSymlink = runtime: pkgs.runCommand "dotnet-symlink" {} ''
+    mkdir -p $out/usr/bin
+    ln -s ${runtime}/bin/dotnet $out/usr/bin/dotnet
+  '';
+
+  mkImageRoot = runtime: pkgs.buildEnv {
     name = "image-root";
     paths = [
-      pkgs.cacert         # TLS certificates (/etc/ssl/certs)
-      pkgs.icu            # .NET globalization
-      pkgs.tzdata         # timezone data
-      pyroscope-libs      # Pyroscope native profiler .so files
+      pkgs.cacert              # TLS certificates (/etc/ssl/certs)
+      pkgs.icu                 # .NET globalization
+      pkgs.tzdata              # timezone data
+      pyroscope-libs           # Pyroscope native profiler .so files
+      (mkDotnetSymlink runtime) # /usr/bin/dotnet
     ];
-    pathsToLink = [ "/etc" "/share" "/lib" "/pyroscope" ];
+    pathsToLink = [ "/etc" "/share" "/lib" "/pyroscope" "/usr" ];
   };
 
   web-image = nix2container.buildImage {
     name = "localhost:5000/dotnet-lgtmp-poc";
     tag = "latest";
-    copyToRoot = imageRoot;
+    copyToRoot = mkImageRoot dotnet-aspnetcore;
 
-    # All env vars are set in the k8s module (dotnet-lgtmp-poc.nix) — not baked into the image
     config = {
-      entrypoint = [ "${dotnet-aspnetcore}/bin/dotnet" "${web-app}/lib/dotnet-lgtmp-poc-web/DotnetLgtmpPoc.Web.dll" ];
+      entrypoint = [ "/usr/bin/dotnet" "${web-app}/lib/dotnet-lgtmp-poc-web/DotnetLgtmpPoc.Web.dll" ];
       exposedPorts = { "8080/tcp" = {}; };
     };
   };
@@ -89,10 +96,10 @@ let
   console-image = nix2container.buildImage {
     name = "localhost:5000/dotnet-lgtmp-console";
     tag = "latest";
-    copyToRoot = imageRoot;
+    copyToRoot = mkImageRoot dotnet-runtime;
 
     config = {
-      entrypoint = [ "${dotnet-runtime}/bin/dotnet" "${console-app}/lib/dotnet-lgtmp-poc-console/DotnetLgtmpPoc.Console.dll" ];
+      entrypoint = [ "/usr/bin/dotnet" "${console-app}/lib/dotnet-lgtmp-poc-console/DotnetLgtmpPoc.Console.dll" ];
     };
   };
 
