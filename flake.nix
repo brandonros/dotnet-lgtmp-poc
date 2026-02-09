@@ -36,5 +36,11 @@
           console-image = built.console-image;
         }
       );
+
+      devShells = eachSystem ({ pkgs, ... }: {
+        default = pkgs.mkShell {
+          packages = [ pkgs.dotnetCorePackages.sdk_10_0 ];
+        };
+      });
     };
 }

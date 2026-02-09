@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using DotnetLgtmpPoc.Core.Data;
 using DotnetLgtmpPoc.Core.Telemetry;
 using DotnetLgtmpPoc.Web.Endpoints;
@@ -11,6 +13,10 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     builder.AddOtelDefaults();
+    builder.Services.ConfigureOpenTelemetryTracerProvider(tracing =>
+        tracing.AddAspNetCoreInstrumentation());
+    builder.Services.ConfigureOpenTelemetryMeterProvider(metrics =>
+        metrics.AddAspNetCoreInstrumentation());
 
     var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
         ?? throw new InvalidOperationException("CONNECTION_STRING env var is required");
