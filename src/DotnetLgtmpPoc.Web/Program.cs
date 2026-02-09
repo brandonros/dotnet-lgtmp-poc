@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -38,6 +39,12 @@ catch (Exception ex)
 
 try
 {
+    // ── Respect X-Forwarded-Proto so OpenAPI/Scalar URLs use HTTPS behind the reverse proxy ──
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    });
+
     // ── Auto-create schema on startup (PoC — no migration files needed) ──
     using (var scope = app.Services.CreateScope())
     {
