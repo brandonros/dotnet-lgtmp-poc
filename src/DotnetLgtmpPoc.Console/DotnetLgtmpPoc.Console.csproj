@@ -4,6 +4,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <ProjectReference Include="../DotnetLgtmpPoc.Core/DotnetLgtmpPoc.Core.csproj" />

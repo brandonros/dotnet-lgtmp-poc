@@ -12,7 +12,6 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Logging.AddJsonConsole();
     builder.AddOtelDefaults();
     builder.Services.ConfigureOpenTelemetryTracerProvider(tracing =>
         tracing.AddAspNetCoreInstrumentation());

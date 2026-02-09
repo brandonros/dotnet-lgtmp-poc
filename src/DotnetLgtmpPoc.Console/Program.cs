@@ -13,7 +13,6 @@ try
 {
     var builder = Host.CreateApplicationBuilder(args);
 
-    builder.Logging.AddJsonConsole();
     builder.AddOtelDefaults();
     builder.Services.ConfigureOpenTelemetryTracerProvider(tracing =>
         tracing.AddSource(ItemImportService.ActivitySourceName));
