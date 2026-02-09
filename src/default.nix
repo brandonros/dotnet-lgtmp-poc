@@ -70,7 +70,19 @@ let
     ln -s ${runtime}/bin/dotnet $out/usr/bin/dotnet
   '';
 
-  mkImageRoot = runtime: pkgs.buildEnv {
+  # Stable /app/run wrapper so CronWorkflows and other callers don't need
+  # to know the Nix store hash for the DLL
+  mkAppWrapper = runtime: app: dll:
+    pkgs.runCommand "app-wrapper" {} ''
+      mkdir -p $out/app
+      cat > $out/app/run <<'SCRIPT'
+      #!/bin/sh
+      exec ${runtime}/bin/dotnet ${app}/lib/${app.pname}/${dll} "$@"
+      SCRIPT
+      chmod +x $out/app/run
+    '';
+
+  mkImageRoot = runtime: extraPaths: pkgs.buildEnv {
     name = "image-root";
     paths = [
       pkgs.cacert              # TLS certificates (/etc/ssl/certs)
@@ -78,17 +90,19 @@ let
       pkgs.tzdata              # timezone data
       pyroscope-libs           # Pyroscope native profiler .so files
       (mkDotnetSymlink runtime) # /usr/bin/dotnet
-    ];
-    pathsToLink = [ "/etc" "/share" "/lib" "/pyroscope" "/usr" ];
+    ] ++ extraPaths;
+    pathsToLink = [ "/etc" "/share" "/lib" "/pyroscope" "/usr" "/app" ];
   };
 
   web-image = nix2container.buildImage {
     name = "localhost:5000/dotnet-lgtmp-poc";
     tag = "latest";
-    copyToRoot = mkImageRoot dotnet-aspnetcore;
+    copyToRoot = mkImageRoot dotnet-aspnetcore [
+      (mkAppWrapper dotnet-aspnetcore web-app "DotnetLgtmpPoc.Web.dll")
+    ];
 
     config = {
-      entrypoint = [ "/usr/bin/dotnet" "${web-app}/lib/dotnet-lgtmp-poc-web/DotnetLgtmpPoc.Web.dll" ];
+      entrypoint = [ "/app/run" ];
       exposedPorts = { "8080/tcp" = {}; };
     };
   };
@@ -96,10 +110,12 @@ let
   console-image = nix2container.buildImage {
     name = "localhost:5000/dotnet-lgtmp-console";
     tag = "latest";
-    copyToRoot = mkImageRoot dotnet-runtime;
+    copyToRoot = mkImageRoot dotnet-runtime [
+      (mkAppWrapper dotnet-runtime console-app "DotnetLgtmpPoc.Console.dll")
+    ];
 
     config = {
-      entrypoint = [ "/usr/bin/dotnet" "${console-app}/lib/dotnet-lgtmp-poc-console/DotnetLgtmpPoc.Console.dll" ];
+      entrypoint = [ "/app/run" ];
     };
   };
 
