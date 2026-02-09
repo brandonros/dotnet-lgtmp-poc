@@ -1,8 +1,8 @@
 [
   {
-    "pname": "CsvHelper",
-    "version": "33.0.1",
-    "hash": "sha256-4MwA/WerpI0VYWiaEudNCNnE1v6/k2tPmLbRjmgijV4="
+    "pname": "Microsoft.AspNetCore.OpenApi",
+    "version": "10.0.2",
+    "hash": "sha256-FU57fPXL4NUDRqi+rLresi4yKttv1KcAnLuEdPCyTos="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore",
@@ -50,31 +50,6 @@
     "hash": "sha256-YSiWoA3VQR22k6+bSEAUqeG7UDzZlJfHWDTubUO5V8U="
   },
   {
-    "pname": "Microsoft.Extensions.Configuration.CommandLine",
-    "version": "10.0.0",
-    "hash": "sha256-ldTiRFqnv8/pA0gl6UR+4DDGAIZOf9+MhaLWOuKOXOI="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.EnvironmentVariables",
-    "version": "10.0.0",
-    "hash": "sha256-UayfeqrAmNyfOkuhcBKfj8UpjQqV/ZMqWrDyxCSG1MA="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.FileExtensions",
-    "version": "10.0.0",
-    "hash": "sha256-rN+3rqrHiTaBfHgP+E4dA8Qm2cFJPfbEcd93yKLsqlQ="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.Json",
-    "version": "10.0.0",
-    "hash": "sha256-VCFukgsxiQ2MFGE6RDMFTGopBHbcZL2t0ER7ENaFXRY="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.UserSecrets",
-    "version": "10.0.0",
-    "hash": "sha256-uIoIpbDPRMfFqT8Y6j/wHbFCAly6H1N9qpxnomRbHIo="
-  },
-  {
     "pname": "Microsoft.Extensions.DependencyInjection",
     "version": "10.0.0",
     "hash": "sha256-LYm9hVlo/R9c2aAKHsDYJ5vY9U0+3Jvclme3ou3BtvQ="
@@ -85,11 +60,6 @@
     "hash": "sha256-9iodXP39YqgxomnOPOxd/mzbG0JfOSXzFoNU3omT2Ps="
   },
   {
-    "pname": "Microsoft.Extensions.Diagnostics",
-    "version": "10.0.0",
-    "hash": "sha256-o7QkCisEcFIh227qBUfWFci2ns4cgEpLqpX7YvHGToQ="
-  },
-  {
     "pname": "Microsoft.Extensions.Diagnostics.Abstractions",
     "version": "10.0.0",
     "hash": "sha256-cix7QxQ/g3sj6reXu3jn0cRv2RijzceaLLkchEGTt5E="
@@ -98,21 +68,6 @@
     "pname": "Microsoft.Extensions.FileProviders.Abstractions",
     "version": "10.0.0",
     "hash": "sha256-CHDs2HCN8QcfuYQpgNVszZ5dfXFe4yS9K2GoQXecc20="
-  },
-  {
-    "pname": "Microsoft.Extensions.FileProviders.Physical",
-    "version": "10.0.0",
-    "hash": "sha256-2Rw/cwBO+/A3QY2IjN/c8Y0LhtC1qTBL7VdJiD1J2UQ="
-  },
-  {
-    "pname": "Microsoft.Extensions.FileSystemGlobbing",
-    "version": "10.0.0",
-    "hash": "sha256-ETfVTdsdBtp69EggLg/AARTQW4lLQYVdVldXIQrsjZA="
-  },
-  {
-    "pname": "Microsoft.Extensions.Hosting",
-    "version": "10.0.0",
-    "hash": "sha256-tY0g6lCy2yFprE+NmriiU6FGmwpzxV8LqE0ZFNKIwuM="
   },
   {
     "pname": "Microsoft.Extensions.Hosting.Abstractions",
@@ -135,26 +90,6 @@
     "hash": "sha256-7/TWO1aq8hdgbcTEKDBWIjgSC9KpFN3kRnMX+12bOkU="
   },
   {
-    "pname": "Microsoft.Extensions.Logging.Console",
-    "version": "10.0.0",
-    "hash": "sha256-Rsblo7GSMTOr43876KkdvqS6wU9Typ1yoFK3tL50CBk="
-  },
-  {
-    "pname": "Microsoft.Extensions.Logging.Debug",
-    "version": "10.0.0",
-    "hash": "sha256-n/+KRVlsgKm17cJImaoAPHAObHpApW/hf6mMsQFGrvY="
-  },
-  {
-    "pname": "Microsoft.Extensions.Logging.EventLog",
-    "version": "10.0.0",
-    "hash": "sha256-4RJ2r80RtI3QUAhCAYbGnA0YcTmouqtZvQU9o3CrB38="
-  },
-  {
-    "pname": "Microsoft.Extensions.Logging.EventSource",
-    "version": "10.0.0",
-    "hash": "sha256-tqC13Qwkf4x14iGxOYlXTyeoN8KPVX+mupv2LdpzGHo="
-  },
-  {
     "pname": "Microsoft.Extensions.Options",
     "version": "10.0.0",
     "hash": "sha256-j5MOqZSKeUtxxzmZjzZMGy0vELHdvPraqwTQQQNVsYA="
@@ -168,6 +103,11 @@
     "pname": "Microsoft.Extensions.Primitives",
     "version": "10.0.0",
     "hash": "sha256-Dup08KcptLjlnpN5t5//+p4n8FUTgRAq4n/w1s6us+I="
+  },
+  {
+    "pname": "Microsoft.OpenApi",
+    "version": "2.0.0",
+    "hash": "sha256-8eiM3Mx4Hx1etx52RlczoHG2z9XIpWgu2LQtWSt086k="
   },
   {
     "pname": "Npgsql",
@@ -235,8 +175,8 @@
     "hash": "sha256-0Nqggi3hVgRE1ilAj4sjm5hgUXO+w+5MwJ3ox10wuog="
   },
   {
-    "pname": "System.Diagnostics.EventLog",
-    "version": "10.0.0",
-    "hash": "sha256-pN3tld926Fp0n5ZNjjzIJviUQrynlOAB0vhc1aoso6E="
+    "pname": "Scalar.AspNetCore",
+    "version": "2.12.36",
+    "hash": "sha256-CZXd7U3k3KSQh9BRLRz+01Yge0QwxjUVCkYd+MW9vw8="
   }
 ]
