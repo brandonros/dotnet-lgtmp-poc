@@ -4,6 +4,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using DotnetLgtmpPoc.Core.Data;
 using DotnetLgtmpPoc.Core.Telemetry;
+using Scalar.AspNetCore;
 using DotnetLgtmpPoc.Web.Endpoints;
 
 WebApplication app;
@@ -22,6 +23,8 @@ try
     var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
         ?? throw new InvalidOperationException("CONNECTION_STRING env var is required");
     builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+    builder.Services.AddOpenApi();
 
     app = builder.Build();
 }
@@ -53,6 +56,9 @@ try
         }
         await next();
     });
+
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 
     app.MapItemEndpoints();
     app.MapGet("/health", () => Results.Ok("healthy"));
