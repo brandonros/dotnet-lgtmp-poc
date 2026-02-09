@@ -73,13 +73,13 @@ let
   # Stable /app/run wrapper so CronWorkflows and other callers don't need
   # to know the Nix store hash for the DLL
   mkAppWrapper = runtime: app: dll:
-    pkgs.runCommand "app-wrapper" {} ''
+    let
+      script = pkgs.writeShellScript "run" ''
+        exec ${runtime}/bin/dotnet ${app}/lib/${app.pname}/${dll} "$@"
+      '';
+    in pkgs.runCommand "app-wrapper" {} ''
       mkdir -p $out/app
-      cat > $out/app/run <<'SCRIPT'
-      #!/bin/sh
-      exec ${runtime}/bin/dotnet ${app}/lib/${app.pname}/${dll} "$@"
-      SCRIPT
-      chmod +x $out/app/run
+      ln -s ${script} $out/app/run
     '';
 
   mkImageRoot = runtime: extraPaths: pkgs.buildEnv {
