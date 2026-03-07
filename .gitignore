@@ -9,3 +9,10 @@ result
 .vs/
 .idea/
 *.user
+
+
+# Ignore DevSpace cache and log folder
+.devspace/
+
+# charts
+*.tgz

@@ -1,0 +1,42 @@
+app-template:
+  controllers:
+    main:
+      replicas: 1
+      pod:
+        annotations:
+          linkerd.io/inject: "enabled"
+      containers:
+        main:
+          image:
+            repository: localhost:5000/dotnet-lgtmp-poc
+            tag: latest
+            pullPolicy: Always
+          env:
+            # ASP.NET Core
+            ASPNETCORE_URLS: "http://+:8080"
+            DOTNET_ENVIRONMENT: Production
+            DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "false"
+
+            # PostgreSQL
+            CONNECTION_STRING: "Host=pgcat.pgcat.svc.cluster.local;Port=6432;Database=dotnet_lgtmp;Username=dotnet_lgtmp;Password=dotnet_lgtmp_homelab"
+
+            # OpenTelemetry
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://alloy.alloy.svc.cluster.local:4318"
+            OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+            OTEL_SERVICE_NAME: dotnet-lgtmp-poc
+
+            # Pyroscope CLR profiler (native)
+            CORECLR_ENABLE_PROFILING: "1"
+            CORECLR_PROFILER: "{BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}"
+            CORECLR_PROFILER_PATH: /pyroscope/Pyroscope.Profiler.Native.so
+            LD_PRELOAD: /pyroscope/Pyroscope.Linux.ApiWrapper.x64.so
+            PYROSCOPE_PROFILING_ENABLED: "1"
+            PYROSCOPE_SERVER_ADDRESS: "http://pyroscope.pyroscope.svc.cluster.local:4040"
+            PYROSCOPE_APPLICATION_NAME: dotnet-lgtmp-poc
+
+  service:
+    main:
+      controller: main
+      ports:
+        http:
+          port: 8080

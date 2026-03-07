@@ -1,0 +1,10 @@
+apiVersion: v2
+name: dotnet-lgtmp-poc
+description: .NET 10 CRUD API with full LGTMP observability
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+dependencies:
+  - name: app-template
+    version: 4.6.2
+    repository: oci://ghcr.io/bjw-s-labs/helm
