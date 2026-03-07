@@ -35,5 +35,8 @@ if [ -z "$BASH" ]; then export PS1="$ "; fi
 # Include project's bin/ folder in PATH
 export PATH="./bin:$PATH"
 
-# Open shell
-bash --norc
+# Install vsdbg
+curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l ~/.vsdbg
+
+# Start dotnet watch with hot reload
+dotnet watch --project ./src/DotnetLgtmpPoc.Web -c Debug

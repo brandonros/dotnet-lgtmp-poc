@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to DevSpace",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickRemoteProcess}",
+      "pipeTransport": {
+        "pipeProgram": "ssh",
+        "pipeArgs": ["app.dotnet-lgtmp-poc.devspace"],
+        "debuggerPath": "~/.vsdbg/vsdbg",
+        "pipeCwd": "${workspaceFolder}"
+      },
+      "justMyCode": true
+    }
+  ]
+}
